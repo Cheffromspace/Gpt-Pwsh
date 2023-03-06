@@ -19,8 +19,6 @@ function Invoke-Conversation {
        [string]$message,
        [string]$model = 'gpt-3.5-turbo'
    )
-  
-    $Global:ConversationHistory = @()
 
    # Check if the session variable "ConversationHistory" exists, and create it if it doesn't
    if (-not $Global:ConversationHistory) {
