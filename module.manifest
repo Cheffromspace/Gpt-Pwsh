@@ -1,0 +1,16 @@
+@{
+    ModuleVersion = '1.0'
+    RootModule = 'ConversationModule.psm1'
+    Description = 'Provides functions for conversing with the OpenAI API.'
+    FunctionsToExport = '*'
+    CmdletsToExport = '*'
+    VariablesToExport = '$Global:GptSystemMessage ='
+    AliasesToExport = 'gpt', 'rgpt', 'wgpt', 'lgpt'
+    PrivateData = @{
+        PSData = @{
+            VerboseLogging = $false
+            DebugLogging = $false
+            ErrorLogging = $false
+        }
+    }
+}
