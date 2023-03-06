@@ -4,7 +4,7 @@
     Description = 'Provides functions for conversing with the OpenAI API.'
     FunctionsToExport = '*'
     CmdletsToExport = '*'
-    VariablesToExport = '$Global:GptSystemMessage ='
+    VariablesToExport = '*'
     AliasesToExport = 'gpt', 'rgpt', 'wgpt', 'lgpt'
     PrivateData = @{
         PSData = @{

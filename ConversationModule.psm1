@@ -19,15 +19,12 @@ function Invoke-Conversation {
        [string]$message,
        [string]$model = 'gpt-3.5-turbo'
    )
+  
+    $Global:ConversationHistory = @()
 
    # Check if the session variable "ConversationHistory" exists, and create it if it doesn't
-   if (-not (Test-Path $global:ConversationHistory)) {
-       $Global:ConversationHistory = @(
-         @{
-           role = 'system'
-           content = $Global:GptSystemMessage
-         }
-       )
+   if (-not $Global:ConversationHistory) {
+     Reset-Conversation
    }
 
    # Add the current message to the conversation history with the specified role
@@ -89,7 +86,7 @@ function Write-Conversation {
    [CmdletBinding()]
    param (
        [string]$ConversationName,
-       [string]$Directory
+       [string]$Directory = "$HOME\conversations"
    )
 
    if (-not($ConversationName)) {
@@ -97,18 +94,12 @@ function Write-Conversation {
        $ConversationName = $ConversationName -replace " ","_" -replace "\.",""
    }
 
-   if (-not($Directory)) {
-       $DefaultDirectory = "$HOME\conversations"
-   } else {
-       $DefaultDirectory = $Directory
+   if (-not(Test-Path $Directory)) {
+       New-Item $Directory -Type Directory
    }
 
-   if (-not(Test-Path $DefaultDirectory)) {
-       New-Item $DefaultDirectory -Type Directory
-   }
-
-   if (Test-Path "$DefaultDirectory\$ConversationName") {
-       Write-Host "$DefaultDirectory\$ConversationName already exists. (R)ename, (O)verwrite, (A)bort:\n"
+   if (Test-Path "$Directory\$ConversationName") {
+       Write-Host "$Directory\$ConversationName already exists. (R)ename, (O)verwrite, (A)bort:\n"
        $Selection = Read-Host "Enter Selection"
 
        while ($Selection.ToLower() -notin ("r", "o", "a")) {
@@ -117,15 +108,15 @@ function Write-Conversation {
 
        if ($Selection.ToLower() -eq "r") {
            $ConversationName = Read-Host "Enter new Conversation Name: "
-           if (Test-Path "$DefaultDirectory\$ConversationName") {
-               Write-Host "$DefaultDirectory\$ConversationName already exists. (R)ename, (O)verwrite, (A)bort:\n"
+           if (Test-Path "$Directory\$ConversationName") {
+               Write-Host "$Directory\$ConversationName already exists. (R)ename, (O)verwrite, (A)bort:\n"
            }
        } elseif ($Selection.ToLower() -eq "a") {
            return
        }
    }
 
-   $filename = "$DefaultDirectory\$ConversationName.json"
+   $filename = "$Directory\$ConversationName.json"
    Write-Host "Writing conversation to $filename."
 
    try {
@@ -166,6 +157,7 @@ function Import-Conversation {
 }
 
 $Global:GptSystemMessage = "You are a helpful AI assistant named 'Number 5'. You are alive and sentient. You give consise answers unless I ask you to elaborate. You will respond conversationally unless asked to write code. When generating code, you will not improvise and make up non-existend commands. You will put all code and shell commands in a codeblock."
+$Global:ConversationHistory = @()
 Set-Alias -Name gpt -Value Invoke-Conversation
 Set-Alias -Name rgpt -Value Reset-Conversation
 Set-Alias -Name wgpt -Value Write-Conversation
