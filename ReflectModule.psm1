@@ -13,17 +13,14 @@ function Invoke-ReflectGPT {
         [Parameter(Mandatory=$true)]
         [string]$Question
     )
-    $Question = Add-QuestionAndAnswer $Question
-
     $Responses = @()
 
     # Ask GPT-4 the query three times
     foreach ($i in 0..2) {
         Reset-Conversation
-        Write-Host $i
         $response = Invoke-Conversation -message $Question -temperature 0.6 -model gpt-4 
-        Write-Host $Response
-        $Responses[$i] = $Response
+        $Responses += $Response
       }
 
+    Write-Output $Responses
   }
