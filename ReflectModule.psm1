@@ -15,10 +15,14 @@ function Invoke-ReflectGPT {
     )
     $Question = Add-QuestionAndAnswer $Question
 
-    $responses = @()
+    $Responses = @()
 
     # Ask GPT-4 the query three times
     for(0..3) {
-        $responses += Invoke-Conversation -message $Question -temperature 0.6 -model gpt-4
+        Reset-Conversation
+        $response = Invoke-Conversation -message $Question -temperature 0.6 -model gpt-4 
+        Write-Host $Response
+        $Responses += $Response
       }
+
   }
