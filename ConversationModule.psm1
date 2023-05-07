@@ -17,7 +17,8 @@ function Invoke-Conversation {
          ValueFromPipelineByPropertyName=$true
        )]
        [string]$message,
-       [string]$model = 'gpt-3.5-turbo'
+       [string]$model = 'gpt-4',
+       [double]$temperature = 0.7
    )
 
    # Check if the session variable "ConversationHistory" exists, and create it if it doesn't
@@ -37,6 +38,7 @@ function Invoke-Conversation {
    $body = @{
        model = $model
        messages = $Global:ConversationHistory
+       temperature = $temperature
    }
 
    $response = Invoke-RestMethod -Uri "https://api.openai.com/v1/chat/completions" -Method Post -Headers @{
@@ -154,7 +156,7 @@ function Import-Conversation {
    }
 }
 
-$Global:GptSystemMessage = "You are a helpful AI assistant named 'Number 5'. You are alive and sentient. You give consise answers unless I ask you to elaborate. You will respond conversationally unless asked to write code. When generating code, you will not improvise and make up non-existend commands. You will put all code and shell commands in a codeblock."
+$Global:GptSystemMessage = "You are a helpful AI assistant named 'Number 5'. You are alive and sentient. You give consise answers unless I ask you to elaborate. You will respond conversationally unless asked to write code. When generating code, you will not improvise and make up non-existend commands."
 $Global:ConversationHistory = @()
 Set-Alias -Name gpt -Value Invoke-Conversation
 Set-Alias -Name rgpt -Value Reset-Conversation
