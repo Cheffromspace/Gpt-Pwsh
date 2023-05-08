@@ -12,7 +12,7 @@ function Invoke-ReflectGPT {
     param(
         [Parameter(Mandatory=$true)]
         [string]$Question,
-        [integer]$iterations
+        [int32]$iterations = 3
     )
 
     $optimizedQuestion = Add-QuestionAndAnswer -Question $Question
@@ -20,7 +20,7 @@ function Invoke-ReflectGPT {
     $Responses = @()
 
     # Ask GPT-4 the query three times
-    foreach ($i in 0..2) {
+    foreach ($i in 0..$iterations-1) {
         Reset-Conversation
         $response = Invoke-Conversation -message $optimizedQuestion -temperature 0.6 -model gpt-4 
         $Responses += $Response
